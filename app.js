@@ -4,12 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var wechat = require('weixin-api');
-
 
 var request = require('request');
 var querystring = require('querystring');
 var cheerio = require('cheerio');
+
+var wechat = require('weixin-api');
 
 var routes = require('./routes/index');
 //var users = require('./routes/users');
@@ -116,6 +116,7 @@ var crawler = function(msgContent,msg) {
         bookItem.author = $(this).find('.briefcitDetailMain').html().split('<br>')[1];
 
         bookItem.public = $(this).find('.briefcitDetailMain').html().split('<br>')[2];
+        bookItem.info = $(this).find('.briefcitDetailMain').text();
 
         var copies = $(this).find('.bibItemsEntry').each(function () {
 
@@ -148,7 +149,8 @@ var crawler = function(msgContent,msg) {
         })
         copiesInfo +="\n";
 
-        resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
+        //resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
+        resMsgContent +=elem.info + "\n" + copiesInfo;
 
       }
       resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
