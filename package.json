@@ -16,7 +16,8 @@
     "crypto-js":"*",
     "weixin-api":"*",
     "cheerio":"*",
-    "request":"*"
+    "request":"*",
+    "querystring":"*"
 
   }
 }
