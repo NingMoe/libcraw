@@ -8,7 +8,7 @@ var wechat = require('weixin-api');
 
 var routes = require('./routes/index');
 //var users = require('./routes/users');
-var crawler = require('./routes/crawler');
+//var crawler = require('./routes/crawler');
 
 var app = express();
 
@@ -71,23 +71,99 @@ wechat.textMsg(function(msg){
   console.log("message received");
   console.log(JSON.stringify(msg));
 
-  var resMsg = {};
 
+  var thisWechat = this;
   var booktitle = msg.content;
-  var resMsgContent = crawler(booktitle);
+  crawler(booktitle,msg,thisWechat);
 
-  resMsg = {
-    fromUserName : msg.toUserName,
-    toUserName : msg.fromUserName,
-    msgType : "text",
-    content : resMsgContent,
-    funcFlag : 0
-  }
 
-  wechat.sendMsg(resMsg);
 })
 
+var crawler = function(msgContent,msg,wechat) {
+  var queryContents = {
+    searchtype: 'X',
+    SORT: 'D',
+    searcharg: msgContent
+  };
+  var MsgContent = "";
+  var url = "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
 
+  console.log(url);
+
+  request(url, callback);
+
+  function callback(err, res, body) {
+    var resMsgContent = "";
+    if (!err && res.statusCode == 200) {
+      var $ = cheerio.load(body, {normalizeWhitespace: true});
+      //$('.briefcitDetail').each(function(){
+      //    console.log($(this).find('.briefcitDetailMain').html().split('<br>')[2]);
+      //})
+      var bookitems = [];
+
+      $(".briefcitDetail").each(function () {
+        var bookItem = {
+          title: '',
+          author: '',
+          public: '',
+          copies: []
+        };
+
+        bookItem.title = $(this).find('.briefcitTitle a').text();
+        bookItem.author = $(this).find('.briefcitDetailMain').html().split('<br>')[1];
+
+        bookItem.public = $(this).find('.briefcitDetailMain').html().split('<br>')[2];
+
+        var copies = $(this).find('.bibItemsEntry').each(function () {
+
+          var bookCopy = {
+            location: '',
+            callNo: '',
+            status: ''
+          };
+
+          var bookcopyitem = $(this).find('td');
+
+          bookCopy.location = bookcopyitem.eq(0).text();
+          bookCopy.callNo = bookcopyitem.eq(1).text();
+          bookCopy.status = bookcopyitem.eq(2).text();
+
+          bookItem.copies.push(bookCopy);
+
+        })
+
+        bookitems.push(bookItem);
+
+      })
+
+      for(var i = 0; i < 6; i++){
+        //console.log(JSON.stringify(elem) + "\n");
+        var elem = bookitems[i];
+        var copiesInfo = "";
+        elem.copies.forEach(function (copy) {
+          copiesInfo += copy.location + "\n" + copy.callNo + "\n" + copy.status + "\n";
+        })
+        copiesInfo +="\n";
+
+        resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
+
+      }
+      resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
+      console.log(resMsgContent);
+
+      var resMsg = {
+        fromUserName : msg.toUserName,
+        toUserName : msg.fromUserName,
+        msgType : "text",
+        content : resMsgContent,
+        funcFlag : 0
+      }
+
+      wechat.sendMsg(resMsg);
+    }
+  }
+
+}
 
 
 module.exports = app;
