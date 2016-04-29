@@ -6,6 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var wechat = require('weixin-api');
 
+
+var request = require('request');
+var querystring = require('querystring');
+var cheerio = require('cheerio');
+
 var routes = require('./routes/index');
 //var users = require('./routes/users');
 //var crawler = require('./routes/crawler');
