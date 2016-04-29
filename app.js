@@ -145,18 +145,23 @@ var crawler = function(msgContent,msg) {
       for(var i = 0; i < 6; i++){
         //console.log(JSON.stringify(elem) + "\n");
         var elem = bookitems[i];
-        var copiesInfo = "";
-        elem.copies.forEach(function (copy) {
-          copiesInfo += copy.location + "\n" + copy.callNo + "\n" + copy.status + "\n";
-        })
-        copiesInfo +="\n";
+        if(elem == undefined){
+          resMsgContent = "图书馆没有这本书呢(ಥ _ ಥ)换一本试试？";
+        }else{
+          var copiesInfo = "";
+          elem.copies.forEach(function (copy) {
+            copiesInfo += copy.location + "\n" + copy.callNo + "\n" + copy.status + "\n";
+          })
+          copiesInfo +="\n";
 
-        //resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
-        resMsgContent +=elem.info + "\n" + copiesInfo;
+          //resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
+          resMsgContent +=elem.info + "\n" + copiesInfo;
 
-      }
-      resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
-      console.log(resMsgContent);
+        }
+        resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
+        console.log(resMsgContent);
+        }
+
 
       var resMsg = {
         fromUserName : msg.toUserName,
