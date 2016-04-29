@@ -145,8 +145,9 @@ var crawler = function(msgContent,msg) {
       for(var i = 0; i < 6; i++){
         //console.log(JSON.stringify(elem) + "\n");
         var elem = bookitems[i];
-        if(elem == undefined){
-          resMsgContent = "图书馆没有这本书呢(ಥ _ ಥ)换一本试试？";
+        if(elem === undefined){
+          resMsgContent = "图书馆没有这本书呢(ಥ _ ಥ)换一本试试？"+'\n';
+          break;
         }else{
           var copiesInfo = "";
           elem.copies.forEach(function (copy) {
@@ -158,9 +159,10 @@ var crawler = function(msgContent,msg) {
           resMsgContent +=elem.info + "\n" + copiesInfo;
 
         }
-        resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
-        console.log(resMsgContent);
+
         }
+      resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
+      console.log(resMsgContent);
 
 
       var resMsg = {
