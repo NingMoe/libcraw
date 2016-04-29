@@ -71,15 +71,13 @@ wechat.textMsg(function(msg){
   console.log("message received");
   console.log(JSON.stringify(msg));
 
-
-  var thisWechat = this;
   var booktitle = msg.content;
-  crawler(booktitle,msg,thisWechat);
+  crawler(booktitle,msg);
 
 
 })
 
-var crawler = function(msgContent,msg,wechat) {
+var crawler = function(msgContent,msg) {
   var queryContents = {
     searchtype: 'X',
     SORT: 'D',
