@@ -27,7 +27,7 @@ var crawler = function(msgContent){
             //    console.log($(this).find('.briefcitDetailMain').html().split('<br>')[2]);
             //})
             var bookitems = [];
-
+            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
             $(".briefcitDetail").each(function(){
                 var bookItem = {
                     title:'',
@@ -71,7 +71,7 @@ var crawler = function(msgContent){
                     })
                     resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo + '\n';
                 }
-                resMsgContent += "Çë½øÈëÍ¼Êé¹Ý¹ÙÍø²é¿´¸ü¶à×ÊÁÏ£º" + "https://library.must.edu.mo/search/?"+querystring.stringify(queryContents);
+                resMsgContent += "è¯·è¿›å…¥å›¾ä¹¦é¦†å®˜ç½‘æŸ¥çœ‹æ›´å¤šèµ„æ–™ï¼š" + "https://library.must.edu.mo/search/?"+querystring.stringify(queryContents);
             }else{
                 bookitems.forEach(function(elem,index,array){
                     console.log(JSON.stringify(elem) + "\n");
@@ -87,7 +87,7 @@ var crawler = function(msgContent){
         }
 
     }
-
+    console.log(resMsgContent);
     return resMsgContent;
 
 };
