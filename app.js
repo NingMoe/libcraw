@@ -116,7 +116,9 @@ var crawler = function(msgContent,msg) {
         bookItem.author = $(this).find('.briefcitDetailMain').html().split('<br>')[1];
 
         bookItem.public = $(this).find('.briefcitDetailMain').html().split('<br>')[2];
-        bookItem.info = $(this).find('.briefcitDetailMain').text();
+        var oriLen = $(this).find('.briefcitDetailMain').text().length;
+        var sliceLen = $(this).find('.briefcitRatings').children('h2').text().length + $(this).find('.briefcitRequest').text().length;
+        bookItem.info = $(this).find('.briefcitDetailMain').text().substring(0,oriLen-sliceLen-14);
 
         var copies = $(this).find('.bibItemsEntry').each(function () {
 
