@@ -1,0 +1,32 @@
+doctype html(lang='zh')
+head
+    meta(charset='UTF-8')
+    | &#x9;
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    | &#x9;
+    title MUSTBEE &#x8D26;&#x53F7;&#x7ED1;&#x5B9A;
+    | &#x9;
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    | &#x9;
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container
+      .row.header
+        h1 MUSTBEE
+      | &#x9;&#x9;
+      .row.description
+        span &#x8BF7;&#x586B;&#x5199;&#x6B63;&#x786E;&#x7684;&#x5B66;&#x751F;&#x5361;&#x53F7;&#x4E0E;&#x5BC6;&#x7801;&#x4EE5;&#x5B8C;&#x6210;&#x7ED1;&#x5B9A;
+      | &#x9;&#x9;
+      form.loginForm(action='http://ec2-54-84-201-78.compute-1.amazonaws.com/login', method='post')
+        .form-group.col-xs-10.col-xs-offset-1.col-sm-10.col-sm-offset-1.col-md-10.col-md-offset-1
+          label(for='stuID') &#x5B66;&#x751F;&#x5361;&#x53F7;
+          | &#x9;&#x9;&#x9;&#x9;
+          input#stuID.form-control(type='text', name='studentID', placeholder='如：1409853A-B123-5678')
+        | &#x9;&#x9;&#x9;
+        .form-group.col-xs-10.col-xs-offset-1.col-sm-10.col-sm-offset-1.col-md-10.col-md-offset-1
+          label(for='stuPWD') &#x5BC6;&#x7801;
+          | &#x9;&#x9;&#x9;&#x9;
+          input#studentPWD.form-control(type='password', name='pwd')
+        | &#x9;&#x9;&#x9;
+        .col-md-4.col-xs-4.col-sm-4.col-md-offset-4.col-xs-offset-4.col-sm-offset-4
+          input.btn.btn-default(type='submit', value='绑定')
