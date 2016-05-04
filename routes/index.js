@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
-var dbPath = 'mongodb://54.84.201.78:27017/students';
+var dbPath = 'mongodb://localhost:27017/students';
 
 router.get('/hello',function(req,res,next){
     res.render('hello',{});
