@@ -19,7 +19,8 @@
     "request":"*",
     "querystring":"*",
     "wechat-api":"*",
-    "mongodb":"*"
+    "mongodb":"*",
+    "ejs":"*"
 
   }
 }
