@@ -17,7 +17,9 @@
     "weixin-api":"*",
     "cheerio":"*",
     "request":"*",
-    "querystring":"*"
+    "querystring":"*",
+    "wechat-api":"*",
+    "mongodb":"*"
 
   }
 }
