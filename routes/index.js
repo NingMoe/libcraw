@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
-var dbPath = 'mongodb://ec2-54-84-201-78.compute-1.amazonaws.com:27017/students';
+var dbPath = 'mongodb://localhost:27017/students';
 
 /* GET home page. */
 router.post('/login', function(req, res, next) {
