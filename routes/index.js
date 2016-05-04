@@ -1,21 +1,40 @@
 var express = require('express');
 var router = express.Router();
-var wechat = require('weixin-api');
+var MongoClient = require('mongodb').MongoClient;
+var dbPath = 'mongodb://ec2-54-84-201-78.compute-1.amazonaws.com:27017/students';
 
-
+router.get('/login',function(req,res,next){
+    res.render('login');
+})
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  //res.render('index', { title: 'Express' });
-  res.set('Content-Type','text/plain');
-  res.write('this is test');
-  res.end();
-});
+router.post('/login', function(req, res, next) {
 
-router.get('/hello', function(req, res, next) {
-  //res.render('index', { title: 'Express' });
-  res.set('Content-Type','text/plain');
-  res.write('this is another test');
+  var data = req.body;
+  var studentID = data.studentID;
+  var pwd = data.pwd;
+
+  console.log(studentID);
+  console.log(pwd);
+
+  MongoClient.connect(dbPath,function(err,db){
+    if(!err){
+      var stubd = db.collection('student');
+      console.log('successfully connected to localhost database');
+
+      if(stubd.find({"studentID":studentID})!=null){
+        stubd.update({"studentID":studentID},{"$set":{"pwd":pwd}},true);
+        console.log('pwd successfully changed');
+      }else{
+        stubd.insertOne({"studentID":studentID,"pwd":pwd});
+        console.log('successfully inserted');
+      }
+
+      db.close();
+    }
+  })
+  res.send(JSON.stringify(req.body));
   res.end();
+  //res.render('index', { title: 'Express' });
 });
 
 module.exports = router;
