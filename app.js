@@ -5,15 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var request = require('request');
-var querystring = require('querystring');
-var cheerio = require('cheerio');
-
 var wechat = require('weixin-api');
 
-var routes = require('./routes/index');
+//var routes = require('./routes/index');
 //var users = require('./routes/users');
-//var crawler = require('./routes/crawler');
+var crawler = require('./routes/libCrawler');
 
 var app = express();
 
@@ -38,6 +34,11 @@ app.post('/', function(req, res) {
 
   wechat.loop(req, res);
 });
+
+app.post('/login',function(req,res){
+  var stuID = req.body.stuID;
+  var stuPW = req.body.stuPW;
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -77,107 +78,23 @@ wechat.textMsg(function(msg){
   console.log(JSON.stringify(msg));
 
   var booktitle = msg.content;
-  crawler(booktitle,msg);
-
+  crawler(booktitle,msg,wechat);
 
 })
 
-var crawler = function(msgContent,msg) {
-  var queryContents = {
-    searchtype: 'X',
-    SORT: 'D',
-    searcharg: msgContent
-  };
-  var MsgContent = "";
-  var url = "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
-
-  console.log(url);
-
-  request(url, callback);
-
-  function callback(err, res, body) {
-    var resMsgContent = "";
-    if (!err && res.statusCode == 200) {
-      var $ = cheerio.load(body, {normalizeWhitespace: true});
-      //$('.briefcitDetail').each(function(){
-      //    console.log($(this).find('.briefcitDetailMain').html().split('<br>')[2]);
-      //})
-      var bookitems = [];
-
-      $(".briefcitDetail").each(function () {
-        var bookItem = {
-          title: '',
-          author: '',
-          public: '',
-          copies: []
-        };
-
-        bookItem.title = $(this).find('.briefcitTitle a').text();
-        bookItem.author = $(this).find('.briefcitDetailMain').html().split('<br>')[1];
-
-        bookItem.public = $(this).find('.briefcitDetailMain').html().split('<br>')[2];
-        var oriLen = $(this).find('.briefcitDetailMain').text().length;
-        var sliceLen = $(this).find('.briefcitRatings').children('h2').text().length + $(this).find('.briefcitRequest').text().length;
-        bookItem.info = $(this).find('.briefcitDetailMain').text().substring(0,oriLen-sliceLen-14);
-
-        var copies = $(this).find('.bibItemsEntry').each(function () {
-
-          var bookCopy = {
-            location: '',
-            callNo: '',
-            status: ''
-          };
-
-          var bookcopyitem = $(this).find('td');
-
-          bookCopy.location = bookcopyitem.eq(0).text();
-          bookCopy.callNo = bookcopyitem.eq(1).text();
-          bookCopy.status = bookcopyitem.eq(2).text();
-
-          bookItem.copies.push(bookCopy);
-
-        })
-
-        bookitems.push(bookItem);
-
-      })
-
-      for(var i = 0; i < 6; i++){
-        //console.log(JSON.stringify(elem) + "\n");
-        var elem = bookitems[i];
-        if(elem === undefined){
-          resMsgContent = "图书馆没有这本书呢(ಥ _ ಥ)换一本试试？"+'\n';
-          break;
-        }else{
-          var copiesInfo = "";
-          elem.copies.forEach(function (copy) {
-            copiesInfo += copy.location + "\n" + copy.callNo + "\n" + copy.status + "\n";
-          })
-          copiesInfo +="\n";
-
-          //resMsgContent += elem.title + "\n" + elem.author + "\n" + copiesInfo;
-          resMsgContent +=elem.info + "\n" + copiesInfo;
-
-        }
-
-        }
-      resMsgContent += "更多资讯请进入图书馆官网查看：" + "https://library.must.edu.mo/search/?" + querystring.stringify(queryContents);
-      console.log(resMsgContent);
-
-
-      var resMsg = {
-        fromUserName : msg.toUserName,
-        toUserName : msg.fromUserName,
-        msgType : "text",
-        content : resMsgContent,
-        funcFlag : 0
-      }
-
-      wechat.sendMsg(resMsg);
-    }
+wechat.eventMsg(function(msg){
+  var eventKey = msg.eventKey;
+  var openID = msg.fromUserName;
+  switch(eventKey){
+    case 'get_GPA':
+    case 'get_SCHEDULE':
+    case 'login':
+    default:
+      break;
   }
 
-}
+
+})
 
 
 module.exports = app;
