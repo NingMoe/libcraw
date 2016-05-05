@@ -14,19 +14,25 @@ var dbUtil = {
                 console.log('successfully connected to localhost database');
 
 
-                if(stubd.find({"openID":openID}).hasNext()._result!=undefined){
-                    stubd.update({"openID":openID},{"$set":{"studentID":stuID,"pwd":stuPWD}},function(err,r){
-                        console.log(err);
-                        db.close();
-                    });
-                    console.log('pwd successfully changed');
-                }else{
-                    stubd.insertOne({"openID":openID,"studentID":stuID,"pwd":stuPWD},function(err,r){
-                        console.log(err);
-                        db.close();
-                    });
-                    console.log('successfully inserted');
-                }
+                stubd.find({"openID":openID}).count(function(err,count){
+                    
+                    if(count != 0){
+                        stubd.update({"openID":openID},{"$set":{"studentID":stuID,"pwd":stuPWD}},function(err,r){
+                            console.log(err);
+                            console.log('pwd successfully changed');
+                            db.close();
+                        });
+                        
+                    }else{
+                        stubd.insertOne({"openID":openID,"studentID":stuID,"pwd":stuPWD},function(err,r){
+                            console.log(err);
+                            console.log('successfully inserted');
+                            db.close();
+                        });
+                        console.log('successfully inserted');
+                    }
+                })
+
 
 
             }
