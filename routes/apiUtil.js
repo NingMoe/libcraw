@@ -7,7 +7,7 @@ var token = '';
 var id = '';
 var util = function(){
     get_accessToken(appID,appSecret);
-    //create_Menu();
+    create_Menu();
 }
 
 function create_Menu(){
@@ -40,12 +40,21 @@ function create_Menu(){
         ]
     }
 
-    api.createMenu(menu,function(err,result){
-        if(err){
+    var options = {
+        url:'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' + token,
+        form:menu
+    }
+
+    request.post(options,callback);
+
+    function callback(err,res,body){
+        console.log(res);
+        console.log(body);
+        if(!err){
             console.log(err);
+            console.log(body);
         }
-        console.log(result.errcode + result.errmsg);
-    })
+    }
 }
 
 function get_accessToken(appid,appsecret){
@@ -62,6 +71,8 @@ function get_accessToken(appid,appsecret){
 
     }
 }
+
+
 
 
 module.exports = util;
