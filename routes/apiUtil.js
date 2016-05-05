@@ -6,11 +6,11 @@ var api = new WechatAPI(appID,appSecret);
 var token = '';
 var id = '';
 var util = function(){
-    get_accessToken(appID,appSecret);
-    create_Menu();
+    get_accessToken(appID,appSecret,create_Menu);
+
 }
 
-function create_Menu(){
+function create_Menu(token){
     var menu = {
         "button":[
             {
@@ -57,7 +57,7 @@ function create_Menu(){
     }
 }
 
-function get_accessToken(appid,appsecret){
+function get_accessToken(appid,appsecret,callbackUtil){
     var url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='+ appid +'&secret=' + appsecret;
     request(url,callback);
 
@@ -70,6 +70,7 @@ function get_accessToken(appid,appsecret){
         }
 
     }
+    callbackUtil(token);
 }
 
 
