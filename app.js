@@ -35,10 +35,10 @@ app.post('/', function(req, res) {
   wechat.loop(req, res);
 });
 
-app.post('/login',function(req,res){
-  var stuID = req.body.stuID;
-  var stuPW = req.body.stuPW;
-})
+// app.post('/login',function(req,res){
+//   var stuID = req.body.stuID;
+//   var stuPW = req.body.stuPW;
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
