@@ -7,12 +7,13 @@ var bodyParser = require('body-parser');
 
 var wechat = require('weixin-api');
 
-var routes = require('./routes/index');
-var util = require('./routes/apiUtil');
+//var routes = require('./routes/index');
+//var util = require('./routes/apiUtil');
 var crawler = require('./routes/libCrawler');
+var dbUtil = require('./routes/dbUtil');
 
 var app = express();
-util();
+//util();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -77,24 +78,43 @@ wechat.textMsg(function(msg){
   console.log("message received");
   console.log(JSON.stringify(msg));
 
-  var booktitle = msg.content;
-  crawler(booktitle,msg,wechat);
+  var data = msg.content;
+  var choice = data.slice(0,4);
+  var value = data.substr(4);
 
-})
+  switch(choice){
+    case '【图书】':
+      crawler(value,msg,wechat);
+          break;
+    case '【绑定】':
 
-wechat.eventMsg(function(msg){
-  var eventKey = msg.eventKey;
-  var openID = msg.fromUserName;
-  switch(eventKey){
-    case 'get_GPA':
-    case 'get_SCHEDULE':
-    case 'login':
-    default:
-      break;
+        dbUtil.stuInfoLogin(value,msg,wechat);
+          break;
+    //case '【GPA】':
+    //    dbUtil.gpaQuery(msg,wechat);
+    //      break;
+    //case '【课表】':
+    //    dbUtil.scheduleQuery(msg,wechat);
+    //      break;
+    default : break;
   }
 
 
 })
+
+//wechat.eventMsg(function(msg){
+//  var eventKey = msg.eventKey;
+//  var openID = msg.fromUserName;
+//  switch(eventKey){
+//    case 'get_GPA':
+//    case 'get_SCHEDULE':
+//    case 'login':
+//    default:
+//      break;
+//  }
+
+
+//})
 
 
 module.exports = app;
