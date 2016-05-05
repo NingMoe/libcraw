@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var wechat = require('weixin-api');
 
-//var routes = require('./routes/index');
+var routes = require('./routes/index');
 //var users = require('./routes/users');
 var crawler = require('./routes/libCrawler');
 
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use('/', routes);
+app.use('/', routes);
 //app.use('/users', users);
 
 app.post('/', function(req, res) {
