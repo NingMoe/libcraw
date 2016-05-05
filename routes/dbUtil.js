@@ -14,15 +14,21 @@ var dbUtil = {
                 console.log('successfully connected to localhost database');
 
 
-                if(stubd.find({"openID":openID}).hasNext()){
-                    stubd.update({"openID":openID},{"$set":{"studentID":stuID,"pwd":stuPWD}},true);
+                if(stubd.find({"openID":openID}).hasNext()._result!=undefined){
+                    stubd.update({"openID":openID},{"$set":{"studentID":stuID,"pwd":stuPWD}},function(err,r){
+                        console.log(err);
+                        db.close();
+                    });
                     console.log('pwd successfully changed');
                 }else{
-                    stubd.insert({"openID":openID,"studentID":stuID,"pwd":stuPWD});
+                    stubd.insertOne({"openID":openID,"studentID":stuID,"pwd":stuPWD},function(err,r){
+                        console.log(err);
+                        db.close();
+                    });
                     console.log('successfully inserted');
                 }
 
-                db.close();
+
             }
         })
 
