@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var wechat = require('weixin-api');
 
-//var routes = require('./routes/index');
+var routes = require('./routes/index');
 //var util = require('./routes/apiUtil');
 var crawler = require('./routes/libCrawler');
 var dbUtil = require('./routes/dbUtil');
