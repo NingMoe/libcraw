@@ -1,28 +1,33 @@
 var WechatAPI = require('wechat-api');
-var api = new WechatAPI('wx6fc4d11bf181a100','dfec253e1e3f8e5226e3067ed9177826');
+var request = require('request');
+var appID = 'wx6fc4d11bf181a100';
+var appSecret = 'dfec253e1e3f8e5226e3067ed9177826';
+var api = new WechatAPI(appID,appSecret);
+var token = '';
 var id = '';
 var util = function(){
-    create_Menu();
+    get_accessToken(appID,appSecret);
+    //create_Menu();
 }
 
 function create_Menu(){
     var menu = {
         "button":[
             {
-                "name":"²éÑ¯",
+                "name":"æŸ¥è¯¢",
                 "sub_button":[{
                     "name":"GPA",
                     "type":"click",
                     "key":"get_GPA"
                 },
                     {
-                        "name":"¿Î³Ì±í",
+                        "name":"è¯¾ç¨‹è¡¨",
                         "type":"click",
                         "key":"get_SCHEDULE"
                     }]
             },
             {
-                "name":"°ó¶¨",
+                "name":"ç»‘å®š",
                 "type":"view",
                 "url":"http://ec2-54-84-201-78.compute-1.amazonaws.com/login.html",
                 "key":"login"
@@ -41,6 +46,21 @@ function create_Menu(){
         }
         console.log(result.errcode + result.errmsg);
     })
+}
+
+function get_accessToken(appid,appsecret){
+    var url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='+ appid +'&secret=' + appsecret;
+    request(url,callback);
+
+    function callback(err,res,body){
+        console.log(err);
+        console.log(body);
+        if(!err){
+            var data = JSON.stringify(body);
+            token = data.access_token;
+        }
+
+    }
 }
 
 
