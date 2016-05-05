@@ -8,11 +8,11 @@ var bodyParser = require('body-parser');
 var wechat = require('weixin-api');
 
 var routes = require('./routes/index');
-//var users = require('./routes/users');
+var util = require('./routes/apiUtil');
 var crawler = require('./routes/libCrawler');
 
 var app = express();
-
+util();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -35,10 +35,10 @@ app.post('/', function(req, res) {
   wechat.loop(req, res);
 });
 
-// app.post('/login',function(req,res){
-//   var stuID = req.body.stuID;
-//   var stuPW = req.body.stuPW;
-// })
+//app.post('/login',function(req,res){
+//  var stuID = req.body.stuID;
+//  var stuPW = req.body.stuPW;
+//})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
