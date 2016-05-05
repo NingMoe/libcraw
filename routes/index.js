@@ -8,7 +8,7 @@ router.get('/hello',function(req,res,next){
     res.end();
 })
 /* GET home page. */
-router.post('/login', function(req, res, next) {
+router.post('/bind', function(req, res, next) {
 
   var data = req.body;
   var studentID = data.studentID;
@@ -22,7 +22,7 @@ router.post('/login', function(req, res, next) {
       var stubd = db.collection('student');
       console.log('successfully connected to localhost database');
 
-      if(stubd.find({"studentID":studentID})!=null){
+      if(stubd.find({"studentID":studentID})){
         stubd.update({"studentID":studentID},{"$set":{"pwd":pwd}},true);
         console.log('pwd successfully changed');
       }else{
