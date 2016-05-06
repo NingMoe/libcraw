@@ -12,6 +12,12 @@ var dbUtil = {
 
         //validate whether the student info are correct
         var resMsgContent = '';
+        var htmltoken = '';
+
+        request(url,function(err,res,body){
+            var $ = cheerio.load(body,{normalizeWhitespace: true});
+            htmltoken = $('input[name="org.apache.struts.taglib.html.TOKEN"]').attr('name');
+        })
         var options = {
             url:url,
             headers:{
@@ -25,7 +31,7 @@ var dbUtil = {
             form:{
                 'userid':stuID,
                 'password':stuPWD,
-                'org.apache.struts.taglib.html.TOKEN':'44ddf807c82ac268e327fd9ab145bbdf'
+                'org.apache.struts.taglib.html.TOKEN':htmltoken
             },
             jar:true
 
@@ -37,8 +43,11 @@ var dbUtil = {
         function callback(err, res, body){
 
             if(!err && res.statusCode === 200){
-                var $ = cheerio.load(body);
-                if($('title').text().slice(-6).substr(0,5) == 'Inbox'){
+                var $ = cheerio.load(body,{normalizeWhitespace: true});
+                var index = $('title').text().indexOf('Inbox');
+                console.log($('title').text());
+                console.log(index);
+                if(index!=-1){
 
                     request.get({
                         url:'https://coes-stud.must.edu.mo/coes/logout.do',
