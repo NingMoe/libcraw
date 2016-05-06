@@ -96,7 +96,24 @@ wechat.textMsg(function(msg){
     //case '【课表】':
     //    dbUtil.scheduleQuery(msg,wechat);
     //      break;
-    default : break;
+      case '【用法】':
+          wechat.sendMsg({
+              fromUserName: msg.toUserName,
+              toUserName: msg.fromUserName,
+              msgType: "text",
+              content: '回复【图书】+书名\n如 \"【图书】javascript\"查询相关图书\n------\n' +
+              '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-B4567 12345678\"' +
+              '进行学生卡号绑定以开通查询GPA及课表功能\n------\n' +
+              '回复【GPA】\n查询当前学期GPA绩点\n------\n' +
+              '回复【课表】\n查询当前学期课程表\n------\n' +
+              '回复【取消绑定】\n取消当前账号绑定的学生卡信息\n------\n' +
+              '回复【用法】\n获取平台使用指南\n',
+              funcFlag: 0
+          });
+          break;
+    default : 
+        crawler(data,msg,wechat);
+        break;
   }
 
 
@@ -107,8 +124,14 @@ wechat.eventMsg(function(msg){
   var event = msg.event;
   switch(event){
     case 'subscribe':
-        var resMsgContent = '感谢关注MUSTBEE微信公众平台\n回复【图书】+书名 如 \"【图书】javascript\"查询相关图书\n回复 【绑定】+学生卡号+空格+学生卡号密码 如 \"【绑定】1409853G-A123-B4567\"' +
-            '进行学生卡号绑定以开通查询GPA及课表功能\n回复【GPA】查询当前学期GPA绩点\n回复【课表】查询当前学期课程表\n回复【用法】或许平台使用指南\n';
+        var resMsgContent = '感谢关注MUSTBEE微信公众平台\n' +
+            '回复【图书】+书名\n如 \"【图书】javascript\"查询相关图书\n------\n' +
+            '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-B4567 12345678\"' +
+            '进行学生卡号绑定以开通查询GPA及课表功能\n------\n' +
+            '回复【GPA】\n查询当前学期GPA绩点\n------\n' +
+            '回复【课表】\n查询当前学期课程表\n------\n' +
+            '回复【取消绑定】\n取消当前账号绑定的学生卡信息\n------\n' +
+            '回复【用法】\n获取平台使用指南\n';
         var resMsg = {
           fromUserName: msg.toUserName,
           toUserName: msg.fromUserName,
