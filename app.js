@@ -102,19 +102,30 @@ wechat.textMsg(function(msg){
 
 })
 
-//wechat.eventMsg(function(msg){
-//  var eventKey = msg.eventKey;
-//  var openID = msg.fromUserName;
-//  switch(eventKey){
-//    case 'get_GPA':
-//    case 'get_SCHEDULE':
-//    case 'login':
-//    default:
-//      break;
-//  }
+wechat.eventMsg(function(msg){
+  var eventKey = msg.eventKey;
+  var event = msg.event;
+  switch(event){
+    case 'subscribe':
+        var resMsgContent = '感谢关注MUSTBEE微信公众平台\n回复【图书】+书名 如 \"【图书】javascript\"查询相关图书\n回复 【绑定】+学生卡号+空格+学生卡号密码 如 \"【绑定】1409853G-A123-B4567\"' +
+            '进行学生卡号绑定以开通查询GPA及课表功能\n回复【GPA】查询当前学期GPA绩点\n回复【课表】查询当前学期课程表\n回复【用法】或许平台使用指南\n';
+        var resMsg = {
+          fromUserName: msg.toUserName,
+          toUserName: msg.fromUserName,
+          msgType: "text",
+          content: resMsgContent,
+          funcFlag: 0
+        }
+
+        wechat.sendMsg(resMsg);
+          break;
+    default:
+          break;
+
+  }
 
 
-//})
+})
 
 
 module.exports = app;
