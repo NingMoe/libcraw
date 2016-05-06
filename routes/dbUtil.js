@@ -45,7 +45,7 @@ var dbUtil = {
                         jar:true
                     })
                     resMsgContent = '您已成功绑定学生卡号信息';
-                    dbConnection(dbPath);
+                    dbConnection(dbPath,stuID,stuPWD,openID);
                     wechatSendMsg(msg,resMsgContent,wechat);
                 }else{
                     request.get({
@@ -66,7 +66,7 @@ var dbUtil = {
     }
 };
 
-function dbConnection(dbPath){
+function dbConnection(dbPath,stuID,stuPWD,openID){
     MongoClient.connect(dbPath,function(err,db){
         if(!err){
             var stubd = db.collection('student');
