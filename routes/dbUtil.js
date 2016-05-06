@@ -1,8 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
 var dbPath = 'mongodb://localhost:27017/students';
 var request = require('request');
-
 var cheerio = require('cheerio');
+var url = 'https://coes-stud.must.edu.mo/coes/login.do';
 
 var dbUtil = {
     stuInfoLogin : function(value,msg,wechat){
@@ -25,7 +25,7 @@ var dbUtil = {
             form:{
                 'userid':stuID,
                 'password':stuPWD,
-                'org.apache.struts.taglib.html.TOKEN':'cf4927687538d27dec6289f094dc8004'
+                'org.apache.struts.taglib.html.TOKEN':'44ddf807c82ac268e327fd9ab145bbdf'
             },
             jar:true
 
@@ -38,7 +38,7 @@ var dbUtil = {
 
             if(!err && res.statusCode === 200){
                 var $ = cheerio.load(body);
-                if($('title').text().slice(-5) == 'Inbox'){
+                if($('title').text().slice(-6).substr(0,5) == 'Inbox'){
 
                     request.get({
                         url:'https://coes-stud.must.edu.mo/coes/logout.do',
@@ -46,11 +46,17 @@ var dbUtil = {
                     })
                     resMsgContent = '您已成功绑定学生卡号信息';
                     dbConnection(dbPath);
-                    wechatSendMsg(resMsgContent,wechat);
+                    wechatSendMsg(msg,resMsgContent,wechat);
                 }else{
-
-                    resMsgContent = '绑定失败，请检查学生卡号、密码是否正确或卡号密码中间是否由空格隔开如\"【绑定】1409853G-A123-B4567 12345678\"';
-                    wechatSendMsg(resMsgContent,wechat);
+                    request.get({
+                        url:'https://coes-stud.must.edu.mo/coes/logout.do',
+                        jar:true
+                    })
+                    resMsgContent = '绑定失败，可能由以下原因之一造成绑定失败\n' +
+                        '【1】学生卡号、密码不正确\n' +
+                        '【2】此学生卡号并未正常退出选课系统\n' +
+                        '【3】卡号密码中间没有由空格隔开如\"【绑定】1409853G-A123-B4567 12345678\"';
+                    wechatSendMsg(msg,resMsgContent,wechat);
                 }
 
 
@@ -90,7 +96,7 @@ function dbConnection(dbPath){
     })
 }
 
-function wechatSendMsg(resMsgContent,wechat){
+function wechatSendMsg(msg,resMsgContent,wechat){
     var resMsg = {
         fromUserName: msg.toUserName,
         toUserName: msg.fromUserName,
