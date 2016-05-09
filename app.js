@@ -8,12 +8,11 @@ var bodyParser = require('body-parser');
 var wechat = require('weixin-api');
 
 var routes = require('./routes/index');
-//var util = require('./routes/apiUtil');
+
 var crawler = require('./routes/libCrawler');
 var dbUtil = require('./routes/dbUtil');
 
 var app = express();
-//util();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -36,10 +35,6 @@ app.post('/', function(req, res) {
   wechat.loop(req, res);
 });
 
-//app.post('/login',function(req,res){
-//  var stuID = req.body.stuID;
-//  var stuPW = req.body.stuPW;
-//})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -87,8 +82,8 @@ wechat.textMsg(function(msg){
       crawler(value,msg,wechat);
           break;
     case '【绑定】':
-
-        dbUtil.stuInfoLogin(value,msg,wechat);
+        var dbu = new dbUtil();
+        dbu.stuInfoLogin(value,msg,wechat);
           break;
     //case '【GPA】':
     //    dbUtil.gpaQuery(msg,wechat);
@@ -102,7 +97,7 @@ wechat.textMsg(function(msg){
               toUserName: msg.fromUserName,
               msgType: "text",
               content: '回复【图书】+书名\n如 \"【图书】javascript\"查询相关图书\n------\n' +
-              '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-4567 12345678\"' +
+              '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-B4567 12345678\"' +
               '进行学生卡号绑定以开通查询GPA及课表功能\n------\n' +
               '回复【GPA】\n查询当前学期GPA绩点\n------\n' +
               '回复【课表】\n查询当前学期课程表\n------\n' +
@@ -111,7 +106,7 @@ wechat.textMsg(function(msg){
               funcFlag: 0
           });
           break;
-    default : 
+    default :
         crawler(data,msg,wechat);
         break;
   }
@@ -126,7 +121,7 @@ wechat.eventMsg(function(msg){
     case 'subscribe':
         var resMsgContent = '感谢关注MUSTBEE微信公众平台\n' +
             '回复【图书】+书名\n如 \"【图书】javascript\"查询相关图书\n------\n' +
-            '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-4567 12345678\"' +
+            '回复 【绑定】+学生卡号+空格+学生卡号密码\n如 \"【绑定】1409853G-A123-B4567 12345678\"' +
             '进行学生卡号绑定以开通查询GPA及课表功能\n------\n' +
             '回复【GPA】\n查询当前学期GPA绩点\n------\n' +
             '回复【课表】\n查询当前学期课程表\n------\n' +
