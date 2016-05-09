@@ -14,7 +14,9 @@ var dbUtil = function(){
         //validate whether the student info are correct
         var resMsgContent = '';
 
-        request(url,function(err,res,body){
+        request(url,callback1);
+
+        function callback1(err,res,body){
             if(!err && res.statusCode == 200){
                 var $ = cheerio.load(body,{normalizeWhitespace: true});
                 var token = $('input[name="org.apache.struts.taglib.html.TOKEN"]').attr('value');
@@ -42,38 +44,39 @@ var dbUtil = function(){
 
                 request.post(options,callback);
 
-                function callback(err, res, body){
+            }
+        }
 
-                    if(!err && res.statusCode === 200){
-                        var $ = cheerio.load(body,{normalizeWhitespace: true});
-                        var index = $('title').text().indexOf('Inbox');
-                        if(index!=-1){
+        function callback(err, res, body){
 
-                            request.get({
-                                url:'https://coes-stud.must.edu.mo/coes/logout.do',
-                                jar:true
-                            })
-                            resMsgContent = '您已成功绑定学生卡号信息';
-                            dbConnection(dbPath,stuID,stuPWD,openID);
-                            wechatSendMsg(msg,resMsgContent,wechat);
-                        }else{
-                            request.get({
-                                url:'https://coes-stud.must.edu.mo/coes/logout.do',
-                                jar:true
-                            })
-                            resMsgContent = '绑定失败，可能由以下原因之一造成绑定失败\n' +
-                                '【1】学生卡号、密码不正确\n' +
-                                '【2】此学生卡号并未正常退出选课系统\n' +
-                                '【3】卡号密码中间没有由空格隔开如\"【绑定】1409853G-A123-B4567 12345678\"';
-                            wechatSendMsg(msg,resMsgContent,wechat);
-                        }
+            if(!err && res.statusCode === 200){
+                var $ = cheerio.load(body,{normalizeWhitespace: true});
+                var index = $('title').text().indexOf('Inbox');
+                if(index!=-1){
 
-
-                    }
+                    request.get({
+                        url:'https://coes-stud.must.edu.mo/coes/logout.do',
+                        jar:true
+                    })
+                    resMsgContent = '您已成功绑定学生卡号信息';
+                    dbConnection(dbPath,stuID,stuPWD,openID);
+                    wechatSendMsg(msg,resMsgContent,wechat);
+                }else{
+                    request.get({
+                        url:'https://coes-stud.must.edu.mo/coes/logout.do',
+                        jar:true
+                    })
+                    resMsgContent = '绑定失败，可能由以下原因之一造成绑定失败\n' +
+                        '【1】学生卡号、密码不正确\n' +
+                        '【2】此学生卡号并未正常退出选课系统\n' +
+                        '【3】卡号密码中间没有由空格隔开如\"【绑定】1409853G-A123-B4567 12345678\"';
+                    wechatSendMsg(msg,resMsgContent,wechat);
                 }
 
+
             }
-        })
+        }
+
 
     }
 };
