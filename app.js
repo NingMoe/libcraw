@@ -82,8 +82,7 @@ wechat.textMsg(function(msg){
       crawler(value,msg,wechat);
           break;
     case '【绑定】':
-        var dbu = new dbUtil();
-        dbu.stuInfoLogin(value,msg,wechat);
+        dbUtil.stuInfoLogin(value,msg);
           break;
     //case '【GPA】':
     //    dbUtil.gpaQuery(msg,wechat);
