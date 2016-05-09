@@ -1,11 +1,11 @@
 var MongoClient = require('mongodb').MongoClient;
 var dbPath = 'mongodb://localhost:27017/students';
-
+var wechat = require('weixin-api');
 var cheerio = require('cheerio');
 var url = 'https://coes-stud.must.edu.mo/coes/login.do';
 
-var dbUtil = function(){
-    this.stuInfoLogin = function(value,msg,wechat){
+var dbUtil = {
+    stuInfoLogin : function(value,msg){
         var request = require('request');
         var stuID = value.split(' ')[0];
         var stuPWD = value.split(' ')[1];
@@ -21,7 +21,7 @@ var dbUtil = function(){
                 var $ = cheerio.load(body,{normalizeWhitespace: true});
                 var token = $('input[name="org.apache.struts.taglib.html.TOKEN"]').attr('value');
                 console.log('token: '+ token);
-
+                wechatSendMsg(msg,'正在验证');
                 var options = {
                     url:url,
                     headers:{
@@ -38,12 +38,8 @@ var dbUtil = function(){
                         'org.apache.struts.taglib.html.TOKEN':token
                     },
                     jar:true
-
                 }
-
-
                 request.post(options,callback);
-
             }
         }
 
@@ -53,24 +49,18 @@ var dbUtil = function(){
                 var $ = cheerio.load(body,{normalizeWhitespace: true});
                 var index = $('title').text().indexOf('Inbox');
                 if(index!=-1){
-
-                    request.get({
-                        url:'https://coes-stud.must.edu.mo/coes/logout.do',
-                        jar:true
-                    })
                     resMsgContent = '您已成功绑定学生卡号信息';
+                    //wechatSendMsg(msg,resMsgContent);
+                    request.get('https://coes-stud.must.edu.mo/coes/logout.do');
                     dbConnection(dbPath,stuID,stuPWD,openID);
-                    wechatSendMsg(msg,resMsgContent,wechat);
+
                 }else{
-                    request.get({
-                        url:'https://coes-stud.must.edu.mo/coes/logout.do',
-                        jar:true
-                    })
+                    request.get('https://coes-stud.must.edu.mo/coes/logout.do');
                     resMsgContent = '绑定失败，可能由以下原因之一造成绑定失败\n' +
                         '【1】学生卡号、密码不正确\n' +
                         '【2】此学生卡号并未正常退出选课系统\n' +
                         '【3】卡号密码中间没有由空格隔开如\"【绑定】1409853G-A123-B4567 12345678\"';
-                    wechatSendMsg(msg,resMsgContent,wechat);
+                    //wechatSendMsg(msg,resMsgContent);
                 }
 
 
@@ -86,7 +76,6 @@ function dbConnection(dbPath,stuID,stuPWD,openID){
         if(!err){
             var stubd = db.collection('student');
             console.log('successfully connected to localhost database');
-
 
             stubd.find({"openID":openID}).count(function(err,count){
 
@@ -111,7 +100,7 @@ function dbConnection(dbPath,stuID,stuPWD,openID){
     })
 }
 
-function wechatSendMsg(msg,resMsgContent,wechat){
+function wechatSendMsg(msg,resMsgContent){
     var resMsg = {
         fromUserName: msg.toUserName,
         toUserName: msg.fromUserName,
